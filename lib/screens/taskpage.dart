@@ -100,8 +100,9 @@ class _TaskPageState extends State<TaskPage> {
                       child: ListView.builder(
                         itemCount: todo?.length,
                         itemBuilder: (context, index) {
+                          print("todo: ${todo?.elementAt(index).title}");
                           return TodoWidgets(
-                            "${todo?.elementAt(index).title}",
+                            title: todo?.elementAt(index).title,
                             isDone: false,
                           );
                         },
@@ -131,7 +132,7 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                       Expanded(
                         child: TextField(
-                          onSubmitted: (value) async {
+                          onSubmitted: (String? value) async {
                             //Check if the field if not empty
                             if (value != "") {
                               //Check if the task is null
