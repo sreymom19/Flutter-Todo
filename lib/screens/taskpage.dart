@@ -96,12 +96,14 @@ class _TaskPageState extends State<TaskPage> {
                   future: dbHelper.getTodo(),
                   builder: (context, AsyncSnapshot<List<Todo>> snapshot) {
                     final List<Todo>? todo = snapshot.data;
-                    print("length: ${todo?.length}");
                     return Expanded(
                       child: ListView.builder(
                         itemCount: todo?.length,
                         itemBuilder: (context, index) {
-                          return const TodoWidgets("", isDone: false);
+                          return TodoWidgets(
+                            "${todo?.elementAt(index).title}",
+                            isDone: false,
+                          );
                         },
                       ),
                     );
