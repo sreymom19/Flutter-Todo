@@ -3,6 +3,7 @@ import 'package:my_flutter_todo/database_helper.dart';
 import 'package:my_flutter_todo/models/task.dart';
 import 'package:my_flutter_todo/models/todo.dart';
 import 'package:my_flutter_todo/screens/homepages.dart';
+import 'package:my_flutter_todo/screens/widgets.dart';
 
 class TaskPage extends StatefulWidget {
   // final Int task; // this is your old code
@@ -14,6 +15,8 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
+  DatabaseHelper dbHelper = DatabaseHelper();
+
   String _taskTitle = "";
   @override
   void initState() {
@@ -56,8 +59,6 @@ class _TaskPageState extends State<TaskPage> {
                             if (value != "") {
                               //Check if the task is null
                               if (widget.task == null) {
-                                DatabaseHelper dbHelper = DatabaseHelper();
-
                                 Task newTask = Task(title: value);
                                 await dbHelper.insertTask(newTask);
                               } else {
@@ -90,56 +91,68 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                   ),
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0,
+                FutureBuilder<List<Todo>>(
+                  initialData: const [],
+                  future: dbHelper.getTodo(),
+                  builder: (context, AsyncSnapshot<List<Todo>> snapshot) {
+                    final List<Todo>? todo = snapshot.data;
+                    print("length: ${todo?.length}");
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: todo?.length,
+                        itemBuilder: (context, index) {
+                          return const TodoWidgets("", isDone: false);
+                        },
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 20.0,
-                            height: 20.0,
-                            margin: const EdgeInsets.only(
-                              right: 12.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(6.0),
-                              border: Border.all(
-                                  color: const Color(0xff86829d), width: 1.5),
-                            ),
-                            child: Image.asset('assets/images/tick.png'),
-                          ),
-                          Expanded(
-                            child: TextField(
-                              onSubmitted: (value) async {
-                                //Check if the field if not empty
-                                if (value != "") {
-                                  //Check if the task is null
-                                  if (widget.task != null) {
-                                    DatabaseHelper dbHelper = DatabaseHelper();
+                    );
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 20.0,
+                        height: 20.0,
+                        margin: const EdgeInsets.only(
+                          right: 12.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(6.0),
+                          border: Border.all(
+                              color: const Color(0xff86829d), width: 1.5),
+                        ),
+                        child: Image.asset('assets/images/tick.png'),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          onSubmitted: (value) async {
+                            //Check if the field if not empty
+                            if (value != "") {
+                              //Check if the task is null
+                              if (widget.task != null) {
+                                DatabaseHelper dbHelper = DatabaseHelper();
 
-                                    Todo newTodo = Todo(
-                                      title: value,
-                                      isDone: 0,
-                                      taskID: widget.task?.id,
-                                    );
-                                    await dbHelper.insertTodo(newTodo);
-                                  }
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                hintText: "Enter todo item",
-                                border: InputBorder.none,
-                              ),
-                            ),
+                                Todo newTodo = Todo(
+                                  title: value,
+                                  isDone: 0,
+                                  taskID: widget.task?.id,
+                                );
+                                await dbHelper.insertTodo(newTodo);
+                              }
+                            }
+                          },
+                          decoration: const InputDecoration(
+                            hintText: "Enter todo item",
+                            border: InputBorder.none,
                           ),
-                        ],
+                        ),
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 )
               ],
             ),
