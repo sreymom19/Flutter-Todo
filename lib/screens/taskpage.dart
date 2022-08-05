@@ -45,7 +45,6 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _titleFocus?.dispose();
     _descriptionFocus?.dispose();
     _todoFocus?.dispose();
@@ -151,7 +150,7 @@ class _TaskPageState extends State<TaskPage> {
                             return GestureDetector(
                               onTap: () {},
                               child: TodoWidgets(
-                                  texts: snapshot.data![index].title,
+                                  title: snapshot.data![index].title,
                                   isDone: snapshot.data![index].isDone == 0
                                       ? false
                                       : true),
@@ -186,8 +185,7 @@ class _TaskPageState extends State<TaskPage> {
                         ),
                         Expanded(
                           child: TextField(
-                            focusNode: _todoFocus,
-                            onSubmitted: (value) async {
+                            onSubmitted: (String? value) async {
                               //Check if the field if not empty
                               if (value != "") {
                                 //Check if the task is null
