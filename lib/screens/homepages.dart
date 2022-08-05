@@ -52,7 +52,9 @@ class _HomePageState extends State<HomePage> {
                                       builder: (context) => TaskPage(
                                           task: tasks?[
                                               index]), // i have remove .id as well
-                                    ));
+                                    )).then((value) {
+                                  setState(() {});
+                                });
                               }),
                               child: TaskCardWidgets(
                                 title: "${tasks?.elementAt(index).title}",

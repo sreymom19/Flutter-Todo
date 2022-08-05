@@ -50,9 +50,9 @@ class TaskCardWidgets extends StatelessWidget {
 }
 
 class TodoWidgets extends StatelessWidget {
-  final String texts;
+  final String? texts;
   final bool isDone;
-  const TodoWidgets(this.texts, {required this.isDone});
+  const TodoWidgets({this.texts, required this.isDone});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class TodoWidgets extends StatelessWidget {
             child: Image.asset('assets/images/tick.png'),
           ),
           Text(
-            texts,
+            texts ?? "(Uname Todo)",
             style: const TextStyle(
               color: Color(0xff211551),
               fontSize: 16.0,
