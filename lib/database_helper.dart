@@ -30,7 +30,12 @@ class DatabaseHelper {
 
   Future<void> updateTaskTitle(int id, String title) async {
     Database db = await database();
-    await db.rawUpdate("UPDATE task SET title = $title WHERE id = $id");
+    await db.rawUpdate("UPDATE tasks SET title = '$title' WHERE id = '$id'");
+  }
+
+  Future<void> updateTaskDescription(int id, String description) async {
+    Database db = await database();
+    await db.rawUpdate("UPDATE tasks SET description = '$description' WHERE id = '$id'");
   }
 
   insertTodo(Todo todo) async {
@@ -61,5 +66,10 @@ class DatabaseHelper {
           title: todoMap[index]['title'],
           isDone: todoMap[index]['isDone']);
     });
+  }
+
+  Future<void> updateTodoDone(int id, int isDone) async {
+    Database db = await database();
+    await db.rawUpdate("UPDATE todo SET isDone = '$isDone' WHERE id = '$id'");
   }
 }

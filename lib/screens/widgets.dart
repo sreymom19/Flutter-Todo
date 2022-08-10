@@ -78,16 +78,18 @@ class TodoWidgets extends StatelessWidget {
             ),
             child: Image.asset('assets/images/tick.png'),
           ),
-          Text(
-            title == null
-                ? "(Unnamed Todo)"
-                : title?.isEmpty == true
-                    ? "(Empty Todo)"
-                    : "$title",
-            style: const TextStyle(
-              color: Color(0xff211551),
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
+          Flexible(
+            child: Text(
+              title == null
+                  ? "(Unnamed Todo)"
+                  : title?.isEmpty == true
+                      ? "(Empty Todo)"
+                      : "$title",
+              style: const TextStyle(
+                color: Color(0xff211551),
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

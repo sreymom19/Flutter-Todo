@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
                       builder: ((BuildContext context,
                           AsyncSnapshot<List<Task>> snapshot) {
                         final tasks = snapshot.data;
+                        final desc = snapshot.data;
                         return ListView.builder(
                           itemCount: tasks?.length,
                           itemBuilder: (context, index) {
@@ -58,6 +59,7 @@ class _HomePageState extends State<HomePage> {
                               }),
                               child: TaskCardWidgets(
                                 title: "${tasks?.elementAt(index).title}",
+                                desc: "${desc?.elementAt(index).description}",
                               ),
                             );
                           },

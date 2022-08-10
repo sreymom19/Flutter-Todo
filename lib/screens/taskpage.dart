@@ -19,6 +19,7 @@ class _TaskPageState extends State<TaskPage> {
 
   int _taskID = 0;
   String _taskTitle = "";
+  String _taskDescription = "";
 
   FocusNode? _titleFocus;
   FocusNode? _descriptionFocus;
@@ -33,6 +34,7 @@ class _TaskPageState extends State<TaskPage> {
       _contentVisible = true;
 
       _taskTitle = "${widget.task?.title}";
+      _taskDescription = "${widget.task?.description}";
       _taskID = widget.task?.id ?? 0;
     }
 
@@ -117,14 +119,21 @@ class _TaskPageState extends State<TaskPage> {
                 Visibility(
                   visible: _contentVisible,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0,
+                    padding: const EdgeInsets.only(
+                      bottom: 12.0,
                     ),
                     child: TextField(
                       focusNode: _descriptionFocus,
                       onSubmitted: (value) {
+                        if (value != "") {
+                          if (_taskID != 0) {
+                            dbHelper.updateTaskDescription(_taskID, value);
+                          }
+                        }
                         _todoFocus?.requestFocus();
                       },
+                      controller: TextEditingController()
+                        ..text = _taskDescription,
                       decoration: const InputDecoration(
                         hintText: 'Enter Description for the task...',
                         border: InputBorder.none,
@@ -148,10 +157,19 @@ class _TaskPageState extends State<TaskPage> {
                           itemCount: todo?.length,
                           itemBuilder: (context, index) {
                             return GestureDetector(
-                              onTap: () {},
+                              onTap: () async {
+                                if (snapshot.data?[index].isDone == 0) {
+                                  await dbHelper.updateTodoDone(
+                                      snapshot.data?[index].id ?? 0, 1);
+                                } else {
+                                  await dbHelper.updateTodoDone(
+                                      snapshot.data?[index].id ?? 0, 0);
+                                }
+                                setState(() {});
+                              },
                               child: TodoWidgets(
-                                  title: snapshot.data![index].title,
-                                  isDone: snapshot.data![index].isDone == 0
+                                  title: snapshot.data?[index].title,
+                                  isDone: snapshot.data?[index].isDone == 0
                                       ? false
                                       : true),
                             );
