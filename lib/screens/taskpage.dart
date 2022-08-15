@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_todo/database_helper.dart';
 import 'package:my_flutter_todo/models/task.dart';
 import 'package:my_flutter_todo/models/todo.dart';
-import 'package:my_flutter_todo/screens/homepages.dart';
 import 'package:my_flutter_todo/screens/widgets.dart';
 
 class TaskPage extends StatefulWidget {
@@ -124,10 +123,12 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                     child: TextField(
                       focusNode: _descriptionFocus,
-                      onSubmitted: (value) {
+                      onSubmitted: (value) async {
                         if (value != "") {
                           if (_taskID != 0) {
-                            dbHelper.updateTaskDescription(_taskID, value);
+                            await dbHelper.updateTaskDescription(
+                                _taskID, value);
+                            _taskDescription = value;
                           }
                         }
                         _todoFocus?.requestFocus();
@@ -203,20 +204,23 @@ class _TaskPageState extends State<TaskPage> {
                         ),
                         Expanded(
                           child: TextField(
+                            focusNode: _todoFocus,
+                            controller: TextEditingController()..text = "",
                             onSubmitted: (String? value) async {
                               //Check if the field if not empty
                               if (value != "") {
                                 //Check if the task is null
-                                if (widget.task != null) {
+                                if (_taskID != 0) {
                                   DatabaseHelper dbHelper = DatabaseHelper();
 
                                   Todo newTodo = Todo(
                                     title: value,
                                     isDone: 0,
-                                    taskID: widget.task?.id,
+                                    taskID: _taskID,
                                   );
                                   await dbHelper.insertTodo(newTodo);
                                   setState(() {});
+                                  _todoFocus?.requestFocus();
                                 } else {
                                   print("Task doesn't exsit");
                                 }
@@ -240,13 +244,11 @@ class _TaskPageState extends State<TaskPage> {
                 bottom: 24.0,
                 right: 24.0,
                 child: GestureDetector(
-                  onTap: (() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomePage(),
-                      ),
-                    );
+                  onTap: (() async {
+                    if (_taskID != 0) {
+                      await dbHelper.deleteTask(_taskID);
+                      Navigator.pop(context);
+                    }
                   }),
                   child: Container(
                     width: 60.0,
